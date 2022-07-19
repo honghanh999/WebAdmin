@@ -6,8 +6,9 @@ const ProductSchema = new Schema({
         type: String,
         required: true
     },
-    type: {
-        type: String,
+    brand: {
+        type: Schema.Types.ObjectId,
+        ref: "Brand",
         required: true
     },
     code: {
@@ -55,7 +56,13 @@ const ProductSchema = new Schema({
         required: true
     },
     image: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "Image",
+        required: true
+    },
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: "Admin",
         required: true
     }
 })

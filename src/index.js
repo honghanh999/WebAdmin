@@ -7,7 +7,6 @@ const route = require('./routes')
 const db = require('./app/config/db')
 const fileUpload = require('express-fileupload')
 
-
 db.connect()
 app.use(fileUpload())
 app.use(morgan('combined'))

@@ -7,7 +7,7 @@ class UserController {
     async create(req, res) {
         try {
             const { email, lastName, firstName, address, city, phoneNumber } = req.body
-            const data = { email , lastName, firstName, address, city, phoneNumber }
+            const data = { email, lastName, firstName, address, city, phoneNumber }
             const user = await User.create(data)
             res.json(renderJson({ user }))
         } catch(error) {
@@ -59,7 +59,6 @@ class UserController {
     async unlock(req, res) {
         try {
             const { lockedUser } = req
-            console.log({ lockedUser })
             const data = { ...lockedUser }
             const unlockedUser = await User.create(data._doc)
             await LockedUser.deleteOne({ _id: lockedUser._id })

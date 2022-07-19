@@ -15,7 +15,6 @@ class ExampleController {
             email: "email",
             password: "password"
         }
-        console.log(dataSample)
         const result = await User.create(dataSample)
         res.json(renderJson({ result }))
     }

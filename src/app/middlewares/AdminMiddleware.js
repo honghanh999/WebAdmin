@@ -25,7 +25,6 @@ class AdminMiddleware {
     }
     async authenticateToken(req, res, next) {
         const { authorization } = req.headers
-        console.log({ authorization })
         const token = authorization.replace("Bearer ", "")
         const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
         try {
@@ -33,7 +32,6 @@ class AdminMiddleware {
             if (!verified) {
                 res.json(renderJson({}, false, 401, "Unauthorized"))
             } else {
-                console.log( 'verified.admin._id', verified.admin._id )
                 req.admin = await Admin.findById(verified.admin._id)
                 next()
             }

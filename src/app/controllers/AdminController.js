@@ -1,5 +1,5 @@
 const Admin = require('../models/AdminModel')
-const { renderJson, handleError } = require('../../util/app')
+const { renderJson } = require('../../util/app')
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')

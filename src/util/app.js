@@ -57,16 +57,19 @@ function generateString(length) {
 //     })
 // }
 
-async function storeFile(req, file) {
-    if (file) {
+function storeFile (req, image) {
+    if(image) {
         const generateFile = generateString(10)
-        const name = generateFile + file.name
-        const path = "src/app/uploadFolder/" + name
-        const size = file.size
+        const fileName = generateFile + image.name
+        const extension = fileName.split('.').pop()
+        if (extension !== "jpeg" && extension !== "jpg" && extension !== "png"){
+            throw Error("Image is invalid")
+        }
+        const fileSize = image.size
+        const filePath = "src/app/uploadImage/" + fileName
+        fs.writeFileSync(filePath, image.data)
 
-        fs.writeFileSync(path, file.data)
-
-        return {path, name, size}
+        return { fileName, fileSize, filePath }
     }
 }
 
