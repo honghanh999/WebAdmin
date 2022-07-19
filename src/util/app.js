@@ -62,7 +62,7 @@ function storeFile (req, image) {
         const generateFile = generateString(10)
         const fileName = generateFile + image.name
         const extension = fileName.split('.').pop()
-        if (extension !== "jpeg"){
+        if (extension !== "jpeg" || extension !== "jpg" || extension !== "png"){
             throw Error("Image is invalid")
         }
         const fileSize = image.size

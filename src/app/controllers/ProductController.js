@@ -1,7 +1,7 @@
 const Product = require('../models/ProductModel')
 const Image = require('../models/ImageModel')
 
-const { renderJson, storeFile} = require("../../util/app");
+const { renderJson, storeFile } = require("../../util/app")
 
 const { limit, populateProductDefault } = require('../config/models/index')
 
@@ -45,8 +45,7 @@ class ProductController {
             await Product.updateOne({ _id: product._id }, {
                 $set: { name, type, code, amount, price, screen, CPU, frontCamera, afterCamera, RAM, ROM, memoryStick, sim, image }
             })
-            const newProduct = await Product.findById({ _id: product._id })
-            await newProduct.populate(populateProductDefault)
+            const newProduct = await Product.findById({ _id: product._id }).populate(populateProductDefault)
             res.json(renderJson({ product: newProduct }))
         } catch(error) {
             res.json(renderJson({}, false, 400, error.message))

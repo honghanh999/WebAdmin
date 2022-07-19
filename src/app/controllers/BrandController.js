@@ -1,5 +1,5 @@
 const Brand = require("../models/BrandModel");
-const {renderJson} = require("../../util/app");
+const { renderJson } = require("../../util/app");
 
 class BrandController{
     async create(req, res) {
@@ -8,7 +8,8 @@ class BrandController{
             const { name } = req.body
             const data = {
                 name,
-                creator: admin._id }
+                creator: admin._id
+            }
             const brand = await Brand.create(data)
             await brand.populate("creator")
             res.json(renderJson(brand))
@@ -19,9 +20,9 @@ class BrandController{
 
     async read(req, res) {
         try {
-        const { brand } = req
-        const data = await Brand.findById({ _id: brand._id })
-        await data.populate("creator")
+            const { brand } = req
+            const data = await Brand.findById({ _id: brand._id })
+            await data.populate("creator")
             res.json(renderJson(data))
         } catch(error) {
             res.json(renderJson({}, 400, false, error.message))
@@ -37,8 +38,7 @@ class BrandController{
                     name
                 }
             })
-            const newBrand = await Brand.findById({ _id: brand._id })
-            await newBrand.populate("creator")
+            const newBrand = await Brand.findById({ _id: brand._id }).populate("creator")
             res.json(renderJson({ brand: newBrand }))
         } catch(error) {
             res.json(renderJson({}, 400, false, error.message))
