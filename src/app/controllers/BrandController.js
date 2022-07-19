@@ -10,8 +10,7 @@ class BrandController{
                 name,
                 creator: admin._id
             }
-            const brand = await Brand.create(data)
-            await brand.populate("creator")
+            const brand = (await Brand.create(data)).populate("creator")
             res.json(renderJson(brand))
         } catch(error) {
             res.json(renderJson({}, 400, false, error.message))
@@ -21,8 +20,7 @@ class BrandController{
     async read(req, res) {
         try {
             const { brand } = req
-            const data = await Brand.findById({ _id: brand._id })
-            await data.populate("creator")
+            const data = await Brand.findById({ _id: brand._id }).populate("creator")
             res.json(renderJson(data))
         } catch(error) {
             res.json(renderJson({}, 400, false, error.message))
