@@ -1,0 +1,83 @@
+Nodejs is a runtime environment
+Expressjs is a nodejs framework
+
+
+
+1. nodemon (library)
+- This is a tool that helps develop node.js based applications by automatically
+restarting the node app when file changes in the directory are detected
+- Install: in devDependencies (if the applications don't be used in the real environment -> install in devDependencies)
+# npm i nodemon --save-dev
+- Add "start": "nodemon index.js" into script at package.json file
+- Open terminal: npm start
+* Can using nodemon --inspect index.js to debug file
+
+2. morgan 
+- HTTP request logger middleware for node.js
+- It helps to find bug easily 
+- Install:
+# npm i morgan --save-dev
+- Adding const morgan = require('morgan') into index.js file
+
+3. Template engine (handlebars)
+- It is used to build rapidly web applications that are split into different components
+- Install express-handlebars
+# npm install express-handlebars
+- Adding #const handlebars = require('express-handlebars')# into index.js
+
+4. Adding image
+- app.use(express.static(path.join(__dirname, 'public')))
+
+5. SASS
+# npm install node-sass 
+- package.json: 
+"watch": "node-sass src/resources/scss/app.scss src/public/css/app.css",
+- npm run watch: to compile to app.css (listen the change)
+- Adding --watch in order for you don't need to call everytime you change source code
++ package.json: 
+"watch": "node-sass --watch src/resources/scss/app.scss src/public/css/app.css",
+
+6. Query parameters
+- It helps to transmit data to the URL
+- Create:
+https://www.google.com/search?q=plant vegetableS&ref=plant&author=abc
+
+7. Install prettier lint-staged husky
+npm i prettier lint-staged husky --save-dev
+
+prettier: formatter
+husky: pre-commit
+
+8. Mongodb (It is the same with NoSQL)
+- Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js. 
+It manages relationships between data, provides schema validation, and is used 
+to translate between objects in code and the representation of those objects in MongoDB.
+
+9. JSON viewer extension
+- Format JSON file
+
+10. Mongoose slug generator
+- This is a plugin for mongoose
+- Adding plugin in model file
+- Syntax:
+npm install mongoose-slug-generator --save
+const slug = require('mongoose-slug-generator')
+
+11. Using [npm install method-override] of expresst to add [PUT] method
+
+12. Soft delete
+- Delete(soft)
+- Restore
+- Force delete
+- Adding
+npm install mongoose-delete
+
+13. Method
+- Create -> POST
+- Update -> PUT, PATCH
+- Delete -> Delete
+- Read -> GET
+
+14. Mongoose-sequence
+- Sequence and autoincrement handling for mongoose
+npm install --save mongoose-sequence

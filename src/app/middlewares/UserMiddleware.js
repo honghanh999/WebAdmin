@@ -7,7 +7,6 @@ class UserMiddleware {
         try {
             const { id } = req.params
             const user = await User.findById({ _id: id})
-            console.log({ user })
             if (user) {
                 req.user = user
                 next()
@@ -21,7 +20,6 @@ class UserMiddleware {
         try {
             const { id } = req.params
             const lockedUser = await LockedUser.findById({ _id: id})
-            console.log({ lockedUser })
             if (lockedUser) {
                 req.lockedUser = lockedUser
                 next()

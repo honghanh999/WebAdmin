@@ -1,21 +1,41 @@
-const Product = require('../models/ProductModel')
+const Brand = require('../models/BrandModel')
 const { renderJson } = require('../../util/app')
+const { ObjectId } = require('mongoose').Types
 
-class ProductMiddleware {
-    async findId (req, res, next) {
-            try {
-                const { id } = req.params
-                const product = await Product.findById({ _id: id } )
-                if (!product) {
-                    res.json(renderJson({}, false, 400, 'Not found'))
-                } else {
-                    req.product = product
-                    next()
-                }
-            } catch (error) {
-                res.json(renderJson({}, false, 400, error.message))
+class BrandMiddleware {
+    async findId(req, res, next) {
+        try {
+            const { id } = req.params
+            const brand = await Brand.findById({ _id: id } )
+            if (!brand) {
+                res.json(renderJson({}, false, 400, 'Not found'))
+            } else {
+                req.brand = brand
+                next()
             }
+        } catch (error) {
+            res.json(renderJson({}, false, 400, error.message))
+        }
+    }
+
+    async findBrand(req, res, next) {
+        try {
+            const { brand }  = req.body
+            const valid = ObjectId.isValid(brand)
+            if (!valid) {
+                return res.json(renderJson({}, false, 400, "Not found"))
+            }
+            const brandChecked = await Brand.findOne({ _id: brand })
+            if (!brandChecked) {
+                res.json(renderJson({}, false, 400, "Not found"))
+            } else {
+                req.brand = brandChecked
+                next()
+            }
+        } catch(error) {
+            res.json(renderJson({}, false, 400, error.message))
+        }
     }
 }
 
-module.exports = ProductMiddleware
+module.exports = BrandMiddleware
