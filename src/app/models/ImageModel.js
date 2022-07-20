@@ -2,11 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const ImageSchema = new Schema({
-    fileType: {
-        type: String,
-        enum: ['avatar', 'banner'],
-        required: true
-    },
     fileName: {
         type: String,
         required: true
@@ -15,20 +10,21 @@ const ImageSchema = new Schema({
         type: String,
         required: true
     },
-    user: {
-        type: String,
+    fileSize: {
+        type: Number,
         required: true
     },
-    size: {
-        type: Number,
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: "Admin",
         required: true
     }
 }, {
     timestamps: true
 })
 
-ImageSchema.index({
-    fileName: 1
-})
+// ImageSchema.index({
+//     fileName: 1
+// })
 
 module.exports = mongoose.model('Image', ImageSchema)

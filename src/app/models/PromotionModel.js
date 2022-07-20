@@ -31,8 +31,8 @@ const PromotionSchema = new Schema({
         required: true
     },
     creator: {
-        type: Object.Types.ObjectId,
-        ref: "admin",
+        type: Schema.Types.ObjectId,
+        ref: "Admin",
         required: true
     }
 })

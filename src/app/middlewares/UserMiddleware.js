@@ -5,12 +5,13 @@ const {renderJson} = require("../../util/app");
 class UserMiddleware {
     async findId(req, res, next) {
         try {
-            const { id } = req.params
-            const user = await User.findById({ _id: id})
-            console.log({ user })
+            const { _id } = req.params
+            const user = await User.findById(_id)
             if (user) {
                 req.user = user
                 next()
+            } else {
+                res.status(404).json(renderJson({}, false, 404, "not found"))
             }
         } catch(error) {
             res.json(renderJson({}, false, 400, error.message))
@@ -21,10 +22,11 @@ class UserMiddleware {
         try {
             const { id } = req.params
             const lockedUser = await LockedUser.findById({ _id: id})
-            console.log({ lockedUser })
             if (lockedUser) {
                 req.lockedUser = lockedUser
                 next()
+            } else {
+                res.status(404).json(renderJson({}, false, 404, "not found"))
             }
         } catch(error) {
             res.json(renderJson({}, false, 400, error.message))
