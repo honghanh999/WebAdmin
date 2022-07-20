@@ -5,8 +5,8 @@ const { ObjectId } = require('mongoose').Types
 class BrandMiddleware {
     async findId(req, res, next) {
         try {
-            const { _id } = req.params
-            const brand = await Brand.findById(_id)
+            const { id } = req.params
+            const brand = await Brand.findById(id).populate('creator')
             if (!brand) {
                 res.status(404).json(renderJson({}, false, 404, 'Not found'))
             } else {
@@ -14,7 +14,7 @@ class BrandMiddleware {
                 next()
             }
         } catch (error) {
-            res.json(renderJson({}, false, 400, error.message))
+            res.status(404).json(renderJson({}, false, 404, 'Not found'))
         }
     }
 
