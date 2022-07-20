@@ -6,26 +6,30 @@ class UserMiddleware {
     async findId(req, res, next) {
         try {
             const { id } = req.params
-            const user = await User.findById({ _id: id})
+            const user = await User.findById(id)
             if (user) {
                 req.user = user
                 next()
+            } else {
+                res.status(404).json(renderJson({}, false, 404, "not found"))
             }
         } catch(error) {
-            res.json(renderJson({}, false, 400, error.message))
+            res.status(404).json(renderJson({}, false, 404, 'Not found'))
         }
     }
 
     async findIdLockedUser(req, res, next) {
         try {
             const { id } = req.params
-            const lockedUser = await LockedUser.findById({ _id: id})
+            const lockedUser = await LockedUser.findById(id)
             if (lockedUser) {
                 req.lockedUser = lockedUser
                 next()
+            } else {
+                res.status(404).json(renderJson({}, false, 404, "not found"))
             }
         } catch(error) {
-            res.json(renderJson({}, false, 400, error.message))
+            res.status(404).json(renderJson({}, false, 404, 'Not found'))
         }
     }
 }

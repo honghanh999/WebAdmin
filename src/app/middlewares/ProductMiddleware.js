@@ -6,15 +6,15 @@ class ProductMiddleware {
     async findId(req, res, next) {
         try {
             const { id } = req.params
-            const product = await Product.findById({ _id: id } )
+            const product = await Product.findById(id)
             if (!product) {
-                res.json(renderJson({}, false, 400, 'Not found'))
+                res.status(404).json(renderJson({}, false, 404, 'Not found'))
             } else {
                 req.product = product
                 next()
             }
         } catch (error) {
-            res.json(renderJson({}, false, 400, error.message))
+            res.status(404).json(renderJson({}, false, 404, 'Not found'))
         }
     }
 

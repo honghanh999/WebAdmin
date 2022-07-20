@@ -6,15 +6,15 @@ class BrandMiddleware {
     async findId(req, res, next) {
         try {
             const { id } = req.params
-            const brand = await Brand.findById({ _id: id } )
+            const brand = await Brand.findById(id).populate('creator')
             if (!brand) {
-                res.json(renderJson({}, false, 400, 'Not found'))
+                res.status(404).json(renderJson({}, false, 404, 'Not found'))
             } else {
                 req.brand = brand
                 next()
             }
         } catch (error) {
-            res.json(renderJson({}, false, 400, error.message))
+            res.status(404).json(renderJson({}, false, 404, 'Not found'))
         }
     }
 
@@ -23,11 +23,11 @@ class BrandMiddleware {
             const { brand }  = req.body
             const valid = ObjectId.isValid(brand)
             if (!valid) {
-                return res.json(renderJson({}, false, 400, "Not found"))
+                return res.status(404).json(renderJson({}, false, 404, "Not found"))
             }
             const brandChecked = await Brand.findOne({ _id: brand })
             if (!brandChecked) {
-                res.json(renderJson({}, false, 400, "Not found"))
+                res.status(404).json(renderJson({}, false, 404, "Not found"))
             } else {
                 req.brand = brandChecked
                 next()
