@@ -10,7 +10,7 @@ class BrandController{
                 name,
                 creator: admin._id
             }
-            const brand = (await Brand.create(data))
+            const brand = await Brand.create(data)
             await brand.populate("creator")
             res.json(renderJson(brand))
         } catch(error) {

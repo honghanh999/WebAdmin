@@ -29,6 +29,9 @@ class PromotionMiddleware {
             startDate: Joi.date().required(),
             endDate: Joi.date().required(),
         })
+        if (req.body.startDate > req.body.endDate) {
+            return res.status(400).json(renderJson({}, false, 400, 'endDate need to greater than or equal to startDate'))
+        }
         handleError(req, res, next, schema)
     }
 }
