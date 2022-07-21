@@ -12,8 +12,31 @@ const populateProductDefault = [{
     }
 },
     "creator"]
+const populateCartDefault = [{
+    path: "product",
+    populate: [{
+        path: "image"
+    }, "brand"]
+}, {
+    path: "user"
+}]
+const cartStatus = {
+    all: ["addNew", "completed"],
+    completed: "completed",
+    addNew: "addNew"
+}
+// const populateCartDefault = [{
+//     path: "product",
+//     populate: {
+//         path: "image"
+//     }
+// },
+//     "user"]
+
 module.exports = {
     limit,
     defaultPage,
     populateProductDefault,
+    populateCartDefault,
+    cartStatus
 }
