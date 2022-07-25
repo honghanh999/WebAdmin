@@ -1,7 +1,7 @@
 const User = require('../models/UserModel')
 const LockedUser = require('../models/LockedUserModel')
 
-const {renderJson, handleError} = require("../../util/app");
+const { renderJson, handleError } = require("../../util/app");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 

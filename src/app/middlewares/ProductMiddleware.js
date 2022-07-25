@@ -44,8 +44,8 @@ class ProductMiddleware {
     async findProduct(req, res, next) {
         try {
             const { product }  = req.body
-            const valid = ObjectId.isValid(product)
-            if (!valid) {
+            const validObjectId = ObjectId.isValid(product)
+            if (!validObjectId) {
                 return res.status(404).json(renderJson({}, false, 404, "Not found"))
             }
             const productChecked = await Product.findOne({ _id: product })
