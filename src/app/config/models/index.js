@@ -25,14 +25,6 @@ const cartStatus = {
     completed: "completed",
     addNew: "addNew"
 }
-// const populateCartDefault = [{
-//     path: "product",
-//     populate: {
-//         path: "image"
-//     }
-// },
-//     "user"]
-
 module.exports = {
     limit,
     defaultPage,

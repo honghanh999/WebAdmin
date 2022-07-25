@@ -1,5 +1,5 @@
 const Cart = require('../models/CartModel')
-const Client = require('../models/ClientModel')
+const User = require('../models/UserModel')
 const Product = require('../models/ProductModel')
 const { renderJson } = require('../../util/app')
 const { populateCartDefault, cartStatus } = require('../config/models')
@@ -7,19 +7,19 @@ const { populateCartDefault, cartStatus } = require('../config/models')
 class CartController {
     async addToCart(req, res) {
         try {
-            const { product, client } = req
+            const { product, user } = req
             const { quantity } = req.body
-            const checkProduct = await Cart.findOne({ product: product._id })
+            const checkProduct = await Cart.findOne({ product: product._id, status: cartStatus.addNew })
             if (checkProduct) {
                 const totalQuantity = checkProduct.quantity + parseInt(quantity, 10)
                 const price = product.price * totalQuantity
-                await Cart.updateOne({ product: product._id }, {
+                await Cart.updateOne({ product: product._id, status: cartStatus.addNew }, {
                     $set: {
                         quantity: totalQuantity,
                         price
                     }
                 })
-                const productUpdated = await Cart.findOne({ product: product._id }).populate(populateCartDefault)
+                const productUpdated = await Cart.findOne({ product: product._id, status: cartStatus.addNew }).populate(populateCartDefault)
                 return res.json(renderJson({ cart: productUpdated }))
             }
             const price = product.price * quantity
@@ -27,7 +27,7 @@ class CartController {
                 product: product._id,
                 quantity,
                 price,
-                user: client._id,
+                user: user._id,
                 status: cartStatus.addNew
             }
             const cart = await Cart.create(data)
@@ -47,7 +47,7 @@ class CartController {
             }
             await Cart.deleteOne({ product: product._id, status: cartStatus.addNew })
             res.json(renderJson({}))
-        } catch(error){
+        } catch(error) {
             res.status(400).json(renderJson({}, false, 400, error.message))
         }
     }
@@ -55,21 +55,21 @@ class CartController {
         try {
             const { quantity } = req.body
             const { product } = req
-            const checkProduct = await Cart.findOne({ product: product._id, status: cartStatus.addNew})
+            const checkProduct = await Cart.findOne({ product: product._id, status: cartStatus.addNew })
             if (!checkProduct) {
                 return res.status(404).json(renderJson({}, false, 404, "not found"))
             }
-            if (quantity === "0") {
+            if (!quantity) {
                 await Cart.deleteOne({ product: product._id, status: cartStatus.addNew })
                 return res.json(renderJson({}))
             }
-            await Cart.updateOne({ product: product._id }, {
+            await Cart.updateOne({ product: product._id, status: cartStatus.addNew }, {
                 $set: {
                     quantity,
                     price: product.price * quantity
                 }
             })
-            const productUpdated = await Cart.find({ product: product._id }).populate(populateCartDefault)
+            const productUpdated = await Cart.find({ product: product._id, status: cartStatus.addNew }).populate(populateCartDefault)
             res.json(renderJson({ cart: productUpdated }))
         } catch(error) {
             res.status(400).json(renderJson({}, false, 400, error.message))

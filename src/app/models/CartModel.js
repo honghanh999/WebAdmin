@@ -19,7 +19,7 @@ const CartSchema = new Schema({
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: "Client",
+        ref: "User",
         required: true
     },
     status: {

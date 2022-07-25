@@ -1,6 +1,7 @@
 const Product = require('../models/ProductModel')
 const { renderJson, handleError } = require('../../util/app')
 const Joi = require('joi')
+const { ObjectId } = require('mongoose').Types
 
 class ProductMiddleware {
     async findId(req, res, next) {
@@ -38,6 +39,33 @@ class ProductMiddleware {
             return res.json(renderJson({}, false, 400, "Image is required"))
         }
         handleError(req, res, next, schema)
+    }
+
+    async findProduct(req, res, next) {
+        try {
+            const { product }  = req.body
+            const valid = ObjectId.isValid(product)
+            if (!valid) {
+                return res.status(404).json(renderJson({}, false, 404, "Not found"))
+            }
+            const productChecked = await Product.findOne({ _id: product })
+            if (!productChecked) {
+                res.status(404).json(renderJson({}, false, 404, "Not found"))
+            } else {
+                req.product = productChecked
+                next()
+            }
+        } catch(error) {
+            res.status(400).json(renderJson({}, false, 400, error.message))
+        }
+    }
+
+    async validatePageSearch(req, res, next) {
+        const validate = Joi.object({
+            page: Joi.number().default(0),
+            search: Joi.string()
+        })
+        handleError(req, res, next, validate)
     }
 }
 

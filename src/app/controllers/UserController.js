@@ -1,17 +1,45 @@
 const User = require('../models/UserModel')
 const LockedUser = require('../models/LockedUserModel')
+
 const { renderJson } = require("../../util/app");
 const { limit } = require('../config/models/index')
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 class UserController {
-    async create(req, res) {
+    async register(req, res) {
         try {
-            const { email, lastName, firstName, address, city, phoneNumber } = req.body
-            const data = { email, lastName, firstName, address, city, phoneNumber }
+            const salt = bcrypt.genSaltSync(10)
+            const { firstName, lastName, email, password } = req.body
+            const data = {
+                firstName,
+                lastName,
+                email,
+                password: bcrypt.hashSync(password, salt)
+            }
             const user = await User.create(data)
             res.json(renderJson({ user }))
         } catch(error) {
-            res.json(renderJson({}, false, 400, error.message))
+            res.status(400).json(renderJson({}, false, 400, error.message))
+        }
+    }
+
+    async login(req, res) {
+        try {
+            const { email, password } = req.body
+            const user = await User.findOne({ email })
+            if (!user) {
+                res.json(renderJson({}, false, 400, 'email or password is invalid'))
+            }
+            if (!bcrypt.compareSync(password, user.password)) {
+                res.json(renderJson({}, false, 400, 'email or password is invalid'))
+            } else {
+                const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
+                const accessToken = jwt.sign({ user }, accessTokenSecret, { expiresIn: 86400 })
+                res.json(renderJson({ user, accessToken }))
+            }
+        } catch(error) {
+            res.status(400).json(renderJson({}, false, 400, error.message))
         }
     }
 
@@ -27,12 +55,6 @@ class UserController {
                     lastName: new RegExp(search)
                 }, {
                     firstName: new RegExp(search)
-                }, {
-                    address: new RegExp(search)
-                }, {
-                    city: new RegExp(search)
-                }, {
-                    phoneNumber: new RegExp(search)
                 }]
             }
 

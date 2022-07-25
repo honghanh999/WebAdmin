@@ -71,13 +71,10 @@ class ProductController {
                 $or: [{
                     name: new RegExp(search)
                 }, {
-                    type: new RegExp(search)
-                }, {
                     frontCamera: new RegExp(search)
                 }
                 ]
             }
-
             const product = await Product.find(dbQuery).limit(limit).skip(skipPage).populate(populateProductDefault)
             const count = await Product.count(dbQuery)
             res.json(renderJson({ product, count }))

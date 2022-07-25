@@ -6,7 +6,7 @@ async function connect() {
         console.log({ dbPath })
         await mongoose.connect(dbPath, {
             useUnifiedTopology: true,
-            // autoIndex: true,
+            autoIndex: true,
         })
         mongoose.set('debug', true)
         console.log('Connect successfully')
