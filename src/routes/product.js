@@ -13,6 +13,6 @@ router.post('/', adminMiddleware.authenticateToken, brandMiddleware.findBrand, p
 router.get('/:id', adminMiddleware.authenticateToken, productMiddleware.findId, productController.read)
 router.put('/:id', adminMiddleware.authenticateToken, productMiddleware.findId, productController.update)
 router.delete('/:id', adminMiddleware.authenticateToken, productMiddleware.findId, productController.delete)
-router.get('/', adminMiddleware.authenticateToken, productController.index)
+router.get('/', adminMiddleware.authenticateToken, productMiddleware.validatePageSearch, productController.index)
 
 module.exports = router
