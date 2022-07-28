@@ -25,10 +25,16 @@ const cartStatus = {
     completed: "completed",
     addNew: "addNew"
 }
+const method = {
+    all: ["cash", "bankCard"],
+    cash: "cash",
+    bankCard: "bankCard"
+}
 module.exports = {
     limit,
     defaultPage,
     populateProductDefault,
     populateCartDefault,
-    cartStatus
+    cartStatus,
+    method
 }
