@@ -1,7 +1,11 @@
 const Order = require("../models/OrderModel");
 const Joi = require('joi')
 const { handleError, renderJson } = require("../../util/app");
-const { paymentMethod } = require("../config/models");
+const { paymentMethod, cartStatus} = require("../config/models");
+const Cart = require("../models/CartModel");
+const Product = require("../models/ProductModel");
+const { ObjectId } = require('mongoose').Types
+
 
 
 class OrderMiddleware {
@@ -36,6 +40,27 @@ class OrderMiddleware {
             search: Joi.string()
         })
         handleError(req, res, next, validate)
+    }
+
+    async checkProducts(req, res, next) {
+        const { products } = req.body
+        req.cartChecked = []
+        req.productChecked = []
+        for (const product of products) {
+            const validObjectId = ObjectId.isValid(product)
+            if (!validObjectId) {
+                return res.status(404).json(renderJson({}, false, 404, "At least one of products is not found"))
+            }
+            const cartChecked = await Cart.findOne({ product: product, status: cartStatus.addNew })
+            const productChecked = await Product.findById(product)
+            if (!cartChecked || !productChecked) {
+                return res.status(404).json(renderJson({}, false, 404, "At least one of products is not found"))
+            } else {
+                req.cartChecked.push(cartChecked)
+                req.productChecked.push(productChecked)
+            }
+        }
+        next()
     }
 }
 

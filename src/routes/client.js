@@ -24,7 +24,7 @@ router.post('/user/login', userMiddleware.validateLogin, userController.login)
 router.post('/cart', userMiddleware.authenticateToken, cartMiddleware.validateCart, productMiddleware.findProduct, cartController.addToCart)
 router.delete('/cart', userMiddleware.authenticateToken, cartMiddleware.validateProductId, productMiddleware.findProduct, cartController.deleteProductInCart)
 router.put('/cart', userMiddleware.authenticateToken, cartMiddleware.validateCart, productMiddleware.findProduct, cartController.updateQuantity)
-router.post('/order', userMiddleware.authenticateToken, orderMiddleware.validateOrder, productMiddleware.checkProducts, orderController.order)
+router.post('/order', userMiddleware.authenticateToken, orderMiddleware.validateOrder, orderMiddleware.checkProducts, orderController.order)
 router.get('/order', userMiddleware.authenticateToken, orderMiddleware.validatePageSearch, orderController.index)
 router.get('/order/:id', userMiddleware.authenticateToken, orderMiddleware.checkOrderId, orderController.getOrder)
 

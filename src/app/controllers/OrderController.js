@@ -9,22 +9,16 @@ class OrderController {
     async order(req, res) {
         try {
             const mappingProductPrice = {}
-            const price = [], carts = []
+            const carts = []
             const { recipient, address, phoneNumber, paymentMethod, products } = req.body
             const { user, cartChecked, productChecked } = req
             let totalPrice = 0
-            await Cart.updateMany({ product: { $in: products }, status: cartStatus.addNew }, {
-                $set: {
-                    status: cartStatus.completed
-                }
-            })
-            for (const product of products) {
-                mappingProductPrice[productChecked._id] = productChecked.price
-                price.push(cartChecked.quantity * productChecked.price)
-                carts.push(cartChecked._id)
+            for (const product of productChecked) {
+                mappingProductPrice[product._id] = product.price
             }
-            for (let i = 0; i < price.length; i++) {
-                totalPrice += price[i]
+            for (const cart of cartChecked) {
+                totalPrice += mappingProductPrice[cart.product] * cart.quantity
+                carts.push(cart._id)
             }
             const dataOrder = {
                 carts,
@@ -38,6 +32,11 @@ class OrderController {
             }
             const order = await Order.create(dataOrder)
             await order.populate(populateOrderDefault)
+            await Cart.updateMany({ product: { $in: products }, status: cartStatus.addNew }, {
+                $set: {
+                    status: cartStatus.completed
+                }
+            })
             return res.json(renderJson({ order }))
         }
          catch(error) {
