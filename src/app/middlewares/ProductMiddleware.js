@@ -67,6 +67,7 @@ class ProductMiddleware {
         })
         handleError(req, res, next, validate)
     }
+
 }
 
 module.exports = ProductMiddleware
