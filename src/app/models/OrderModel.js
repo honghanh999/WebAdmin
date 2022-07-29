@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const { method } = require("../config/models");
+const { paymentMethod} = require("../config/models");
 const Schema = mongoose.Schema
 
 const OrderSchema = new Schema({
@@ -25,15 +25,19 @@ const OrderSchema = new Schema({
         type: String,
         required: true
     },
-    phoneNumber:{
+    phoneNumber: {
         type: String,
         required: true
     },
-    paymentMethod:{
+    paymentMethod: {
         type: String,
-        enum: method.all,
+        enum: paymentMethod.all,
         required: true
     },
+    mappingProductPrice: {
+        type: Object,
+        required: true
+    }
 })
 
 module.exports = mongoose.model('Order', OrderSchema)

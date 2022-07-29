@@ -20,15 +20,24 @@ const populateCartDefault = [{
 }, {
     path: "user"
 }]
+const populateOrderDefault = ['user',
+    {
+        path: "carts",
+        populate: {
+            path: "product"
+        }
+    }
+]
 const cartStatus = {
     all: ["addNew", "completed"],
     completed: "completed",
     addNew: "addNew"
 }
-const method = {
-    all: ["cash", "bankCard"],
+const paymentMethod = {
+    all: ["cash", "ATM", "VISA"],
     cash: "cash",
-    bankCard: "bankCard"
+    ATM: "ATM",
+    VISA: "VISA"
 }
 module.exports = {
     limit,
@@ -36,5 +45,6 @@ module.exports = {
     populateProductDefault,
     populateCartDefault,
     cartStatus,
-    method
+    paymentMethod,
+    populateOrderDefault
 }

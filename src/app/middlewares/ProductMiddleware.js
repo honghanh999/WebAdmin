@@ -1,6 +1,8 @@
 const Product = require('../models/ProductModel')
 const { renderJson, handleError } = require('../../util/app')
 const Joi = require('joi')
+const Cart = require("../models/CartModel");
+const {cartStatus} = require("../config/models");
 const { ObjectId } = require('mongoose').Types
 
 class ProductMiddleware {
@@ -66,6 +68,25 @@ class ProductMiddleware {
             search: Joi.string()
         })
         handleError(req, res, next, validate)
+    }
+
+    async checkProducts(req, res, next) {
+        const { products } = req.body
+        for (const product of products) {
+            const validObjectId = ObjectId.isValid(product)
+            if (!validObjectId) {
+                return res.status(404).json(renderJson({}, false, 404, "At least one of products is not found"))
+            }
+            const cartChecked = await Cart.findOne({ product: product, status: cartStatus.addNew })
+            const productChecked = await Product.findById(product)
+            if (!cartChecked || !productChecked) {
+                return res.status(404).json(renderJson({}, false, 404, "At least one of products is not found"))
+            } else {
+                req.cartChecked = cartChecked
+                req.productChecked = productChecked
+            }
+        }
+        next()
     }
 }
 
