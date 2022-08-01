@@ -16,6 +16,10 @@ const OrderController = require('../app/controllers/OrderController')
 const orderController = new OrderController
 const OrderMiddleware = require('../app/middlewares/OrderMiddleware')
 const orderMiddleware = new OrderMiddleware
+const ReviewController = require('../app/controllers/ReviewController')
+const reviewController = new ReviewController
+const ReviewMiddleware = require('../app/middlewares/ReviewMiddleware')
+const reviewMiddleware = new ReviewMiddleware
 
 router.get('/product', productMiddleware.validatePageSearch, productController.index)
 router.get('/product/:id', productMiddleware.findId, productController.read)
@@ -27,5 +31,10 @@ router.put('/cart', userMiddleware.authenticateToken, cartMiddleware.validateCar
 router.post('/order', userMiddleware.authenticateToken, orderMiddleware.validateOrder, orderMiddleware.checkProducts, orderController.order)
 router.get('/order', userMiddleware.authenticateToken, orderMiddleware.validatePageSearch, orderController.index)
 router.get('/order/:id', userMiddleware.authenticateToken, orderMiddleware.checkOrderId, orderController.getOrder)
+router.post('/review', userMiddleware.authenticateToken, reviewMiddleware.validateReview, productMiddleware.findProduct, reviewController.create)
+router.get('/review/:id', userMiddleware.authenticateToken, reviewMiddleware.findId, reviewController.read)
+router.put('/review/:id', userMiddleware.authenticateToken, reviewMiddleware.findId, reviewController.update)
+router.delete('/review/:id', userMiddleware.authenticateToken, reviewMiddleware.findId, reviewController.delete)
+router.get('/review/', userMiddleware.authenticateToken, reviewMiddleware.validatePageSearch, reviewController.index)
 
 module.exports = router
