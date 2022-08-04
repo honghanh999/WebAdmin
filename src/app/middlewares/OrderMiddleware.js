@@ -6,8 +6,6 @@ const Cart = require("../models/CartModel");
 const Product = require("../models/ProductModel");
 const { ObjectId } = require('mongoose').Types
 
-
-
 class OrderMiddleware {
     async validateOrder(req, res, next) {
         const schema = Joi.object({
@@ -15,7 +13,7 @@ class OrderMiddleware {
             recipient: Joi.string().required(),
             address: Joi.string().required(),
             phoneNumber: Joi.string().required(),
-            paymentMethod: Joi.any().allow(paymentMethod.ATM, paymentMethod.cash, paymentMethod.VISA).required(),
+            paymentMethod: Joi.string().valid(...paymentMethod.all).required()
         })
         handleError(req, res, next, schema)
     }
