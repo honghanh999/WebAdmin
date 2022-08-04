@@ -1,5 +1,4 @@
 const Review = require('../models/ReviewModel')
-
 const Joi = require('joi')
 const { handleError, renderJson, storeFiles } = require("../../util/app")
 const { score, filterReview } = require("../config/models")
@@ -66,8 +65,6 @@ class ReviewMiddleware {
         }
         next()
     }
-
-
 }
 
 module.exports = ReviewMiddleware

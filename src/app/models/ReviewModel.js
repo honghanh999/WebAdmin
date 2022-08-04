@@ -1,10 +1,11 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const { score } = require('../config/models')
 
 const ReviewSchema = new Schema({
     score: {
         type: Number,
-        enum: [1, 2, 3, 4, 5],
+        enum: score.all,
         required: true
     },
     comment: {

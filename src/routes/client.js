@@ -32,7 +32,7 @@ router.post('/order', userMiddleware.authenticateToken, orderMiddleware.validate
 router.get('/order', userMiddleware.authenticateToken, orderMiddleware.validatePageSearch, orderController.index)
 router.get('/order/:id', userMiddleware.authenticateToken, orderMiddleware.checkOrderId, orderController.getOrder)
 router.post('/review', userMiddleware.authenticateToken, reviewMiddleware.validateReview, productMiddleware.findProduct, reviewMiddleware.storeImages, reviewController.create)
-router.get('/review/product/:id', productMiddleware.findId, reviewMiddleware.validateGetReview, reviewController.readProductReview)
+router.get('/review/product/:id', productMiddleware.findId, reviewMiddleware.validateGetReview, reviewMiddleware.validatePage, reviewController.getProductReview)
 router.put('/review/:id', userMiddleware.authenticateToken, reviewMiddleware.findId, reviewMiddleware.storeImages, reviewController.update)
 router.delete('/review/:id', userMiddleware.authenticateToken, reviewMiddleware.findId, reviewController.delete)
 router.get('/review/', userMiddleware.authenticateToken, reviewMiddleware.validatePage, reviewController.getOwnReview)
