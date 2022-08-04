@@ -29,15 +29,9 @@ class ReviewMiddleware {
         }
     }
 
-    async validatePage (req, res, next) {
-        const pageSearch = Joi.object({
-            page: Joi.number().default(0),
-        })
-        handleError(req, res, next, pageSearch)
-    }
-
     async validateGetReview (req, res, next) {
         const validate = Joi.object({
+            page: Joi.number().default(0),
             filterTarget: Joi.any().valid(...filterReview.all),
             filterValue: Joi.any()
         })
