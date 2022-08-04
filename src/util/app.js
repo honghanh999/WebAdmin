@@ -1,5 +1,3 @@
-const Image = require("../app/models/ImageModel");
-const formidable = require("formidable");
 const fs = require("fs");
 const renderJson = (data = {}, status = true, code = 200, message = 'success') => {
     return {
@@ -73,9 +71,21 @@ function storeFile (req, image) {
     }
 }
 
+function storeFiles (req, images) {
+    let filesPath = [], filesSize = [], filesName = []
+    for (const image of images) {
+        const { fileName, fileSize, filePath } = storeFile(req, image)
+        filesPath.push(filePath)
+        filesSize.push(fileSize)
+        filesName.push(fileName)
+    }
+    return { filesName, filesSize, filesPath }
+}
+
 module.exports = {
     renderJson,
     handleError,
     generateString,
-    storeFile
+    storeFiles,
+    storeFile,
 }

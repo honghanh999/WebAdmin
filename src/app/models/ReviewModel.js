@@ -16,11 +16,17 @@ const ReviewSchema = new Schema({
         ref: "Product",
         required: true
     },
+    images: [{
+        type: Schema.Types.ObjectId,
+        ref: "ImageUser",
+    }],
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true
     }
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('Review', ReviewSchema)

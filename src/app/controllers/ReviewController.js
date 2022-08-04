@@ -1,8 +1,9 @@
 const Review = require('../models/ReviewModel')
+const ImageUser = require('../models/ImageUserModel')
 const Cart = require('../models/CartModel')
-const { renderJson } = require("../../util/app");
-const { cartStatus, limit } = require("../config/models");
-const Product = require("../models/ProductModel");
+const { renderJson, storeFiles, storeFile } = require("../../util/app");
+const { cartStatus, limit, filterReview } = require("../config/models");
+const Image = require("../models/ImageModel");
 
 class ReviewController {
     async create(req, res) {
@@ -15,19 +16,13 @@ class ReviewController {
                 return res.status(405).json(renderJson({}, false, 405, "Not allowed"))
             }
             const data = { score, comment, product: product._id, user: user._id }
+            if (req.files && req.files.images) {
+                const { imagesStored } = req
+                data.images = imagesStored
+            }
             const review = await Review.create(data)
-            await review.populate(['product', 'user'])
+            await review.populate(['product', 'user', 'images'])
             res.json(renderJson({ review }))
-        } catch(error) {
-            res.status(400).json(renderJson({}, false, 400, error.message ))
-        }
-    }
-
-    async read(req, res) {
-        try {
-            const { review } = req
-            await review.populate(['product', 'user'])
-            res.json(renderJson(review))
         } catch(error) {
             res.status(400).json(renderJson({}, false, 400, error.message ))
         }
@@ -37,11 +32,17 @@ class ReviewController {
         try {
             const { score, comment } = req.body
             const { review } = req
+            const data = { score, comment }
+            await ImageUser.deleteMany({ _id: { $in: review.images } })
+            if (req.files && req.files.images) {
+                const { imagesStored } = req
+                data.images = imagesStored
+            }
             await Review.updateOne({ _id: review._id }, {
-                $set: { score, comment }
+                $set: { ...data }
             })
-            const newReview = await Review.findById({ _id: review._id }).populate(['product', 'user'])
-            res.json(renderJson({ product: newReview }))
+            const newReview = await Review.findById(review).populate(['product', 'user', 'images'])
+            res.json(renderJson({ review: newReview }))
         } catch(error) {
             res.json(renderJson({}, false, 400, error.message))
         }
@@ -57,18 +58,45 @@ class ReviewController {
         }
     }
 
-    async index(req, res) {
+    async getOwnReview(req, res) {
         try {
-            const { page, search } = req.query
+            const { page } = req.query
             const skipPage = limit * page
-            const dbQuery = {
-                comment: new RegExp(search)
-            }
-            const reviews = await Review.find(dbQuery).limit(limit).skip(skipPage).populate(['product', 'user'])
-            const count = await Review.count(dbQuery)
-            res.json(renderJson({ reviews, count }))
+            const reviews = await Review.find().limit(limit).skip(skipPage).populate(['product', 'user', 'images'])
+            res.json(renderJson({ reviews }))
         } catch(error) {
             res.status(400).json(renderJson({}, false, 400, error.message))
+        }
+    }
+
+    async readProductReview(req, res) {
+        try {
+            const { product } = req
+            const review = await Review.findOne({ product: product._id })
+            if (!review) {
+                res.json(renderJson({}))
+            } else {
+                const { filterTarget, filterValue } = req.query
+                const query = {
+                    product: product._id
+                }
+                switch (filterTarget) {
+                    case filterReview.score:
+                        query.score = parseInt(filterValue, 10)
+                        break;
+                    case filterReview.hasImage:
+                        query.image = {
+                            $ne: null
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                const reviewProduct = await Review.find(query).populate(['product', 'user', 'image'])
+                res.json(renderJson(reviewProduct))
+            }
+        } catch(error) {
+            res.status(400).json(renderJson({}, false, 400, error.message ))
         }
     }
 }

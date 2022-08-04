@@ -39,6 +39,19 @@ const paymentMethod = {
     ATM: "ATM",
     VISA: "VISA"
 }
+const score = {
+    all: [1, 2, 3, 4, 5],
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+}
+const filterReview = {
+    all: ["score", "hasImage"],
+    score: "score",
+    hasImage: "hasImage"
+}
 module.exports = {
     limit,
     defaultPage,
@@ -46,5 +59,7 @@ module.exports = {
     populateCartDefault,
     cartStatus,
     paymentMethod,
-    populateOrderDefault
+    populateOrderDefault,
+    score,
+    filterReview
 }

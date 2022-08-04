@@ -1,14 +1,16 @@
 const Review = require('../models/ReviewModel')
 
 const Joi = require('joi')
-const { handleError, renderJson } = require("../../util/app");
+const { handleError, renderJson, storeFiles } = require("../../util/app")
+const { score, filterReview } = require("../config/models")
+const ImageUser = require("../models/ImageUserModel");
 
 class ReviewMiddleware {
     async validateReview(req, res, next) {
         const schema = Joi.object({
-            score: Joi.number().allow('1', '2', '3', '4', '5').required(),
+            score: Joi.number().valid(...score.all).required(),
             comment: Joi.string().required(),
-            product: Joi.required()
+            product: Joi.required(),
         })
         handleError(req, res, next, schema)
     }
@@ -28,13 +30,44 @@ class ReviewMiddleware {
         }
     }
 
-    async validatePageSearch (req, res, next) {
+    async validatePage (req, res, next) {
         const pageSearch = Joi.object({
             page: Joi.number().default(0),
-            search: Joi.string()
         })
         handleError(req, res, next, pageSearch)
     }
+
+    async validateGetReview (req, res, next) {
+        const validate = Joi.object({
+            filterTarget: Joi.any().valid(...filterReview.all),
+            filterValue: Joi.any()
+        })
+        handleError(req, res, next, validate)
+    }
+
+    async storeImages (req, res, next) {
+        if (req.files && req.files.images) {
+            const { user } = req
+            const { images } = req.files
+            const finalImages = !images.length ? [images] : images
+            const { filesName, filesSize, filesPath } = storeFiles(req, finalImages)
+            const imagesStored = []
+            for (let file = 0; file < filesName.length; file ++) {
+                const dataImage = {
+                    fileName: filesName[file],
+                    filePath: filesPath[file],
+                    fileSize: filesSize[file],
+                    user: user._id
+                }
+                const imageCreated = await ImageUser.create(dataImage)
+                imagesStored.push(imageCreated._id)
+            }
+            req.imagesStored = imagesStored
+        }
+        next()
+    }
+
+
 }
 
 module.exports = ReviewMiddleware
