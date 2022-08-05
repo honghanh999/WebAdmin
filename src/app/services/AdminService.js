@@ -19,8 +19,11 @@ const store = async (req) => {
 const login = async (req) => {
     const { username, password } = req.body
     const admin = await Admin.findOne({ username: username })
-    if (!admin || !bcrypt.compareSync(password, admin.password)) {
-        throw new Error("Username or password is invalid")
+    if (!admin || !bcrypt.compareSync(password, admin.password)){
+        throw new Error(JSON.stringify({
+            message: "Username or password is invalid",
+            code: 400
+        }))
     }
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
     const accessToken = jwt.sign({ admin }, accessTokenSecret, { expiresIn: 86400 })

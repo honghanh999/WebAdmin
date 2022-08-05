@@ -20,7 +20,7 @@ const login = async (req) => {
     const { email, password } = req.body
     const user = await User.findOne({ email })
     if (!user || !bcrypt.compareSync(password, user.password)) {
-        return new Error(JSON.stringify({
+        throw new Error(JSON.stringify({
             message: 'Email or password is invalid',
             code: 400
         }))
