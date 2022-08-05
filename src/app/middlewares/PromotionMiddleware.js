@@ -34,6 +34,22 @@ class PromotionMiddleware {
         }
         handleError(req, res, next, schema)
     }
+
+    async validateUpdatePromotion(req, res,next) {
+        const schema = Joi.object({
+            title: Joi.string(),
+            code: Joi.string(),
+            description: Joi.string(),
+            percentOff: Joi.number(),
+            minPurchaseQuantity: Joi.number(),
+            startDate: Joi.date(),
+            endDate: Joi.date(),
+        })
+        if (req.body.startDate > req.body.endDate) {
+            return res.status(400).json(renderJson({}, false, 400, 'endDate need to greater than or equal to startDate'))
+        }
+        handleError(req, res, next, schema)
+    }
 }
 
 module.exports = PromotionMiddleware

@@ -1,71 +1,45 @@
-const Brand = require("../models/BrandModel");
-const { renderJson } = require("../../util/app");
+const branchService = require("../services/BranchService")
+const { renderJson, handler } = require("../../util/app")
 
 class BrandController{
     async create(req, res) {
-        try {
-            const { admin } = req
-            const { name } = req.body
-            const data = {
-                name,
-                creator: admin._id
-            }
-            const brand = await Brand.create(data)
-            await brand.populate("creator")
-            res.json(renderJson(brand))
-        } catch(error) {
-            res.json(renderJson({}, 400, false, error.message))
+        const [ error, result ] = await handler(branchService.store(req))
+        if (error) {
+            return res.status(error.code).json(renderJson({}, false, error.code, error.message))
         }
+        res.json(renderJson(result))
     }
 
     async read(req, res) {
-        try {
-            const { brand } = req
-            const data = await Brand.findById({ _id: brand._id }).populate("creator")
-            res.json(renderJson(data))
-        } catch(error) {
-            res.json(renderJson({}, 400, false, error.message))
+        const [ error, result ] = await handler(branchService.read(req))
+        if (error) {
+            return res.status(error.code).json(renderJson({}, false, error.code, error.message))
         }
+        res.json(renderJson(result))
     }
 
     async update(req, res) {
-        try {
-            const { brand } = req
-            const { name } = req.body
-            await Brand.updateOne({ _id: brand._id}, {
-                $set: {
-                    name
-                }
-            })
-            const newBrand = await Brand.findById({ _id: brand._id }).populate("creator")
-            res.json(renderJson({ brand: newBrand }))
-        } catch(error) {
-            res.json(renderJson({}, 400, false, error.message))
+        const [ error, result ] = await handler(branchService.update(req))
+        if (error) {
+            return res.status(error.code).json(renderJson({}, false, error.code, error.message))
         }
+        res.json(renderJson(result))
     }
 
     async delete(req, res) {
-        try {
-            const { brand } = req
-            await Brand.deleteOne({ _id: brand._id })
-            res.json(renderJson({}))
-        } catch(error) {
-            res.json(renderJson({}, 400, false, error.message))
+        const [ error, result ] = await handler(branchService.deleteBrand(req))
+        if (error) {
+            return res.status(error.code).json(renderJson({}, false, error.code, error.message))
         }
+        res.json(renderJson(result))
     }
 
     async index(req, res) {
-        try {
-            const { search } = req.query
-            const dbQuery = {
-                name: new RegExp(search)
-            }
-            const brand = await Brand.find(dbQuery).populate('creator')
-            const count = await Brand.count(dbQuery)
-            res.json(renderJson({ brand, count }))
-        } catch(error) {
-            res.json(renderJson({}, 400, false, error.message))
+        const [ error, result ] = await handler(branchService.get(req))
+        if (error) {
+            return res.status(error.code).json(renderJson({}, false, error.code, error.message))
         }
+        res.json(renderJson(result))
     }
 }
 

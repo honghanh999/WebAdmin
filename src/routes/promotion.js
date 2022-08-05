@@ -9,7 +9,7 @@ const promotionMiddleware = new PromotionMiddleware
 
 router.post('/', adminMiddleware.authenticateToken, promotionMiddleware.validatePromotion, promotionController.create)
 router.get('/:id', adminMiddleware.authenticateToken, promotionMiddleware.checkId, promotionController.read)
-router.put('/:id', adminMiddleware.authenticateToken, promotionMiddleware.checkId, promotionMiddleware.validatePromotion, promotionController.update)
+router.put('/:id', adminMiddleware.authenticateToken, promotionMiddleware.checkId, promotionMiddleware.validateUpdatePromotion, promotionController.update)
 router.delete('/:id', adminMiddleware.authenticateToken, promotionMiddleware.checkId, promotionController.delete)
 router.get('/', adminMiddleware.authenticateToken, promotionController.index)
 
