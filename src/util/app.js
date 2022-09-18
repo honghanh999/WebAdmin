@@ -82,10 +82,28 @@ function storeFiles (req, images) {
     return { filesName, filesSize, filesPath }
 }
 
+function handler (promise) {
+    return promise.then((result) => {
+        return [null, result]
+    }).catch((error) => {
+        try {
+            console.log({ error })
+            const errorParsed = JSON.parse(error.message)
+            return [errorParsed, null]
+        } catch (e) {
+            return [{
+                message: error.message,
+                code: 400
+            }, null]
+        }
+    })
+}
+
 module.exports = {
     renderJson,
     handleError,
     generateString,
     storeFiles,
     storeFile,
+    handler,
 }
